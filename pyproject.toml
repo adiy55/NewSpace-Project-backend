@@ -1,0 +1,18 @@
+[tool.poetry]
+name = "newspace-project-backend"
+version = "0.1.0"
+description = ""
+authors = ["Your Name <you@example.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.9"
+opencv-python = "^4.7.0.72"
+numpy = "^1.24.3"
+pandas = "^2.0.1"
+matplotlib = "^3.7.1"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
