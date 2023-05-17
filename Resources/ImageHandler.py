@@ -18,8 +18,9 @@ class ImageHandler(Resource):
             parser.add_argument('filename', location='args')
             args = parser.parse_args()
             args_filename = args.get('filename', None)
-            with open(args_filename, 'rb') as f:
-                encoded_image = base64.b64encode(f.read())
+            path = os.path.join(self.image_dir, args_filename)
+            with open(path, 'rb') as f:
+                encoded_image = base64.b64encode(f.read()).decode()
             return {'image': encoded_image}
         except Exception as e:
             abort(400, str(e))
