@@ -11,6 +11,21 @@ import glob
 url_main = "http://localhost:8090/api/"
 
 
+def get_screenshot(latitude, longitude, datetime_str, fov=60):
+    if fov and latitude and longitude and datetime_str:
+        __set_fov(fov=fov)
+        __set_location(latitude=latitude, longitude=longitude)
+        __set_datetime(datetime_str)
+    try:
+        # Create a screenshot of the current view
+        url_screenshot = 'stelaction/do'
+        screenshot = requests.post(url_main + url_screenshot, data={'id': 'actionSave_Screenshot_Global'})
+        print("Screenshot: ", screenshot.status_code, screenshot.content, screenshot.text)
+        return __get_most_recent_screenshot()
+    except Exception as e:
+        print("get_screenshot", e)
+
+
 def __set_fov(fov):
     try:
         param_fov = {'fov': fov}
@@ -18,12 +33,7 @@ def __set_fov(fov):
         fov = requests.post(url_main + url_fov, data=param_fov)
         print("FOV: ", fov)
     except Exception as e:
-        print(e, "4")
-    # # Set the view to face upward, but slightly South so that is North is up
-    # param_view = {'altAz': '[0.0001,0,1]'}
-    # url_view = "main/view"
-    # view = requests.post(url_main + url_view, data=param_view)
-    # print("View: ", view)
+        print("__set_fov", e)
 
 
 def __set_datetime(datetime_str):
@@ -32,8 +42,6 @@ def __set_datetime(datetime_str):
         datetime_format = "%Y:%m:%d %H:%M:%S"
         # Parse the datetime string into a datetime object
         parsed_datetime = datetime.datetime.strptime(datetime_str, datetime_format)
-        # print(parsed_datetime)
-        # print(julian.to_jd(parsed_datetime, fmt='jd'))
         payload = {'time': str(julian.to_jd(parsed_datetime, fmt='jd'))}
         url_datetime = "main/time"
         resp = requests.post(url_main + url_datetime, data=payload)
@@ -42,7 +50,7 @@ def __set_datetime(datetime_str):
         else:
             print("Failed to set the date and time.")
     except Exception as e:
-        print(e, "2")
+        print("__set_datetime", e)
 
 
 def __set_location(latitude, longitude):
@@ -58,42 +66,28 @@ def __set_location(latitude, longitude):
         else:
             print('Location service request failed:', resp.text)
     except Exception as e:
-        print(e, "1")
+        print("__set_location", e)
 
 
-def get_screenshot(fov, latitude, longitude, datetime_str):
-    if fov and latitude and longitude and datetime_str:
-        __set_fov(fov=fov)
-        __set_location(latitude=latitude, longitude=longitude)
-        __set_datetime(datetime_str)
+def __get_most_recent_screenshot():
     try:
-        # Create a screenshot of the current view
-        url_screenshot = 'stelaction/do'
-        screenshot = requests.post(url_main + url_screenshot, data={'id': 'actionSave_Screenshot_Global'})
-        print("Screenshot: ", screenshot.status_code, screenshot.content, screenshot.text)
-        return get_most_recent_screenshot()
+        directory = "C:/Users/adiya/Pictures/Stellarium"  # Default directory where Stellarium saves screenshots
+        list_of_files = glob.glob(directory + '/*')
+        if not list_of_files:
+            return None
+        latest_file = max(list_of_files, key=os.path.getctime)
+        print(latest_file)
+        return latest_file
     except Exception as e:
-        print(e, "0")
-
-
-def get_most_recent_screenshot():
-    print("1")
-    directory = "StellariumScreenshots"
-    list_of_files = glob.glob(directory + '/*')
-    if not list_of_files:
-        return None
-    latest_file = max(list_of_files, key=os.path.getctime)
-    print(latest_file)
-    return latest_file
-
+        print("__get_most_recent_screenshot", e)
 
 # if __name__ == "__main__":
-    # get_screenshot(60, 41.28, 13.24, "2023:01:10 20:00:37")
+# get_screenshot(60, 41.28, 13.24, "2023:01:10 20:00:37")
 
-    # url_status = "main/status"
-    # response = requests.get(url_main + url_status)
-    # print("Status: ", response.status_code)
-    # if response.status_code == 200:
-    #     print("Time: ", response.json().get('time'))
-    #     print("Location: ", response.json().get('location'))
-    #     print("View: ", response.json().get('view'))
+# url_status = "main/status"
+# response = requests.get(url_main + url_status)
+# print("Status: ", response.status_code)
+# if response.status_code == 200:
+#     print("Time: ", response.json().get('time'))
+#     print("Location: ", response.json().get('location'))
+#     print("View: ", response.json().get('view'))
