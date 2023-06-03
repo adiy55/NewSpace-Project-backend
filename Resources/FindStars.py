@@ -20,7 +20,7 @@ class FindStars(Resource):
             latitude = received_data.get('latitude')
             longitude = received_data.get('longitude')
             datetime_str = received_data.get('datetime_str')
-            screenshot_path = get_screenshot(fov, latitude, longitude, datetime_str)
+            screenshot_path = get_screenshot(latitude, longitude, datetime_str, fov)
             with open(screenshot_path, 'rb') as f:
                 encoded_image = base64.b64encode(f.read()).decode()
             return {'status': "accepted", 'encBase64': encoded_image}

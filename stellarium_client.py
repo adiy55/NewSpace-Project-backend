@@ -30,8 +30,11 @@ def __set_fov(fov):
     try:
         param_fov = {'fov': fov}
         url_fov = "main/fov"
-        fov = requests.post(url_main + url_fov, data=param_fov)
-        print("FOV: ", fov)
+        resp = requests.post(url_main + url_fov, data=param_fov)
+        if resp.status_code == 200:
+            print("FOV set successfully.")
+        else:
+            print("Failed to set the FOV.")
     except Exception as e:
         print("__set_fov", e)
 
@@ -80,14 +83,3 @@ def __get_most_recent_screenshot():
         return latest_file
     except Exception as e:
         print("__get_most_recent_screenshot", e)
-
-# if __name__ == "__main__":
-# get_screenshot(60, 41.28, 13.24, "2023:01:10 20:00:37")
-
-# url_status = "main/status"
-# response = requests.get(url_main + url_status)
-# print("Status: ", response.status_code)
-# if response.status_code == 200:
-#     print("Time: ", response.json().get('time'))
-#     print("Location: ", response.json().get('location'))
-#     print("View: ", response.json().get('view'))
