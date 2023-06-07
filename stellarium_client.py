@@ -11,9 +11,10 @@ import glob
 url_main = "http://localhost:8090/api/"
 
 
-def get_screenshot(latitude, longitude, datetime_str, fov=60):
-    if fov and latitude and longitude and datetime_str:
-        __set_fov(fov=fov)
+def get_screenshot(latitude, longitude, datetime_str, img_direction, altitude, fov=60):
+    if latitude and longitude and datetime_str and img_direction and altitude:
+        __set_view(altitude)
+        __set_fov(img_dir=img_direction, fov=fov)
         __set_location(latitude=latitude, longitude=longitude)
         __set_datetime(datetime_str)
     try:
@@ -26,11 +27,33 @@ def get_screenshot(latitude, longitude, datetime_str, fov=60):
         print("get_screenshot", e)
 
 
-def __set_fov(fov):
+def __set_view(altitude):
     try:
-        param_fov = {'fov': fov}
+        url_view = "main/view"
+        params = {'altAz': f'[0, 0, {altitude}]'}
+        resp = requests.post(url_main + url_view, data=params)
+        print(resp)
+    except Exception as e:
+        print("__set_fov", e)
+
+
+def __set_fov(img_dir, fov):
+    try:
+        # horizontal_angle_dir = img_dir - 90
+        horizontal_angle_dir = fov
+        param_fov = {'fov': horizontal_angle_dir,
+                     'fovtype': 'h'}
         url_fov = "main/fov"
         resp = requests.post(url_main + url_fov, data=param_fov)
+        # url_dir = "/main/viewpoint/"
+        # payload = {
+        #     'type': 'set',
+        #     'data': {
+        #         'type': 'look',
+        #         'theta': horizontal_angle_dir,
+        #     }
+        # }
+        # resp = requests.post(url_main + url_dir, data=payload)
         if resp.status_code == 200:
             print("FOV set successfully.")
         else:

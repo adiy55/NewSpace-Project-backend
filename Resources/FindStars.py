@@ -1,6 +1,8 @@
 from flask_restful import Resource
 from flask import request, abort
+
 from stellarium_client import get_screenshot
+from astttttt import astro
 import base64
 
 
@@ -20,7 +22,11 @@ class FindStars(Resource):
             latitude = received_data.get('latitude')
             longitude = received_data.get('longitude')
             datetime_str = received_data.get('datetime_str')
-            screenshot_path = get_screenshot(latitude, longitude, datetime_str, fov)
+            gps_img_direction = received_data.get('gps_img_direction')
+            altitude = received_data.get('altitude')
+            print(received_data)
+            print("gps_img_direction ", gps_img_direction)
+            screenshot_path = get_screenshot(latitude, longitude, datetime_str, gps_img_direction, altitude)
             with open(screenshot_path, 'rb') as f:
                 encoded_image = base64.b64encode(f.read()).decode()
             return {'status': "accepted", 'encBase64': encoded_image}
