@@ -1,3 +1,4 @@
+import re
 import time
 from PIL import Image
 import requests
@@ -7,6 +8,10 @@ import julian
 import json
 import os
 import glob
+import pytesseract
+import wikipediaapi
+
+pytesseract.pytesseract.tesseract_cmd = 'C:/Program Files/Tesseract-OCR/tesseract'
 
 url_main = "http://localhost:8090/api/"
 
@@ -113,16 +118,58 @@ def query_objects(name):
         resp = requests.get(url_main + find_path, data=params)
         return resp.status_code, resp.json()
     except Exception as e:
-        print("query_objects", e)
+        print("query_objects:", e)
         return 400, 'bad request'
 
 
-if __name__ == '__main__':
-    name = 'Moon'
-    query_objects(name)
-    # The Simbad querying object
-    # simbad = Simbad()
-    # simbad.ROW_LIMIT = 20
-    # simbad.TIMEOUT = 500
-    # result = simbad.query_objects(object_names=name)
-    # print(result)
+def __is_english(text):
+    pattern = re.compile(r'[A-Za-z0-9]+')
+    return re.fullmatch(pattern, text) is not None
+
+
+def __remove_char(text, c="@"):
+    if c in text:
+        idx = text.find(c) + 1
+        # print("BEFORE", text)
+        text = text[idx:]
+        # print("AFTER", text)
+    return text
+
+
+def __find_names_in_image(image_path):
+    try:
+        # Open the image file
+        image = Image.open(image_path)
+        # Perform text recognition
+        text = pytesseract.image_to_string(image)
+        names_list = list(map(__remove_char, filter(lambda s: s != '', text.split("\n"))))
+        names_list = list(filter(__is_english, names_list))
+        print("STARS: ", names_list)
+        return names_list
+    except Exception as e:
+        print("__find_names_in_image: ", e)
+        return []
+
+
+def get_wikipedia_link(object_name):
+    try:
+        wiki_wiki = wikipediaapi.Wikipedia('en')
+        page_py = wiki_wiki.page(f"{object_name}")
+
+        if page_py.exists():
+            return page_py.fullurl
+        else:
+            return None
+    except Exception as e:
+        print("get_wikipedia_link: ", e)
+        return None
+
+
+def get_stars_with_links(image_path):
+    names = __find_names_in_image(image_path)
+    urls = []
+    for name in names:
+        wiki_link = get_wikipedia_link(name)
+        if wiki_link is not None:
+            urls.append({f'{name}': wiki_link})
+    return urls
