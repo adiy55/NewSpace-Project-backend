@@ -1,14 +1,27 @@
-from flask_restful import Resource
+from flask_restful import Resource, reqparse
 from flask import request, abort
 
-from stellarium_client import get_screenshot
+from stellarium_client import get_screenshot, query_objects
 import base64
 
 
 class FindStars(Resource):
 
     def get(self):
-        return {'response': 'Hello world'}
+        try:
+            parser = reqparse.RequestParser()
+            parser.add_argument('name', location='args')
+            args = parser.parse_args()
+            star_name = args.get('name', None)
+            print(star_name)
+            if star_name is not None:
+                status, content = query_objects(name=star_name)
+                if status == 200:
+                    return {'content': content}
+                else:
+                    return {'content': 'bad request'}, status
+        except Exception as e:
+            abort(400, str(e))
 
     def post(self):
         """

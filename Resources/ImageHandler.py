@@ -25,6 +25,7 @@ class ImageHandler(Resource):
         except Exception as e:
             abort(400, str(e))
 
+    # https://stackoverflow.com/questions/534839/how-to-create-a-guid-uuid-in-python
     def post(self):
         filenames = []
         try:

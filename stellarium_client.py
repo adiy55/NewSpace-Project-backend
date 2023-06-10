@@ -100,3 +100,29 @@ def __get_most_recent_screenshot():
         return latest_file
     except Exception as e:
         print("__get_most_recent_screenshot", e)
+
+
+def query_objects(name):
+    try:
+        # find_path = f'simbad/lookup'
+        find_path = f'objects/info'
+        params = {
+            'name': name,
+            'format': 'json'
+        }
+        resp = requests.get(url_main + find_path, data=params)
+        return resp.status_code, resp.json()
+    except Exception as e:
+        print("query_objects", e)
+        return 400, 'bad request'
+
+
+if __name__ == '__main__':
+    name = 'Moon'
+    query_objects(name)
+    # The Simbad querying object
+    # simbad = Simbad()
+    # simbad.ROW_LIMIT = 20
+    # simbad.TIMEOUT = 500
+    # result = simbad.query_objects(object_names=name)
+    # print(result)
