@@ -13,8 +13,8 @@ url_main = "http://localhost:8090/api/"
 
 def get_screenshot(latitude, longitude, datetime_str, img_direction, altitude, fov=60):
     if latitude and longitude and datetime_str and img_direction and altitude:
-        __set_view(altitude)
-        __set_fov(img_dir=img_direction, fov=fov)
+        __set_view(compass_direction=img_direction)
+        __set_fov(fov=fov)
         __set_location(latitude=latitude, longitude=longitude)
         __set_datetime(datetime_str)
     try:
@@ -27,33 +27,27 @@ def get_screenshot(latitude, longitude, datetime_str, img_direction, altitude, f
         print("get_screenshot", e)
 
 
-def __set_view(altitude):
+def __set_view(compass_direction):
     try:
         url_view = "main/view"
-        params = {'altAz': f'[0, 0, {altitude}]'}
+        if 90 < compass_direction < 270:
+            south_value = -((compass_direction % 180) / 180 - 1)
+            east_value = -(((compass_direction - 90) % 180 - 90) / 90)
+        else:
+            south_value = (compass_direction % 180) / 180 - 1
+            east_value = ((compass_direction - 90) % 180 - 90) / 90
+        params = {'altAz': f'[{south_value}, {east_value}, 0.25]'}
         resp = requests.post(url_main + url_view, data=params)
         print(resp)
     except Exception as e:
         print("__set_fov", e)
 
 
-def __set_fov(img_dir, fov):
+def __set_fov(fov):
     try:
-        # horizontal_angle_dir = img_dir - 90
-        horizontal_angle_dir = fov
-        param_fov = {'fov': horizontal_angle_dir,
-                     'fovtype': 'h'}
+        param_fov = {'fov': fov}
         url_fov = "main/fov"
         resp = requests.post(url_main + url_fov, data=param_fov)
-        # url_dir = "/main/viewpoint/"
-        # payload = {
-        #     'type': 'set',
-        #     'data': {
-        #         'type': 'look',
-        #         'theta': horizontal_angle_dir,
-        #     }
-        # }
-        # resp = requests.post(url_main + url_dir, data=payload)
         if resp.status_code == 200:
             print("FOV set successfully.")
         else:
