@@ -19,13 +19,14 @@ after detection, the user will gets a links for more info about the found stars
 
 ## Planning
 Stellarium provides us an infrastructure of telescope and data  <br> about stars,
-patterns of stars and more.
+patterns of stars and more. <br>
 With Metadata we provide output on accurate identification of constellations and planets
 
 ## Output
 After the user uploads a picture to the app, we provide a screenshot from our virtual telescope (Stellarium),
 with star detection of the founds stars and planets, the user can click on each found star link
 and it will open the Wikipedia page of the specific star
+the backend will be written in python, and the front in JavaScript (links in How to run)
 
 ## How to Run
 Install [Stellarium for WIN](https://github.com/Stellarium/stellarium/releases/download/v23.1/stellarium-23.1-qt5-win64.exe) <br>
