@@ -56,8 +56,8 @@ https://github.com/Stellarium/stellarium
 https://stellarium.org/doc/0.21.0/scripting_api.html
 #### `PIL Documentation:`
 https://pillow.readthedocs.io/en/stable/
-#### `Calculation Algorithm:`
-https://pillow.readthedocs.io/en/stable/
+#### `Angles calculations:`
+https://https://chat.openai.com/
 
 
 <p align="center">
