@@ -64,7 +64,7 @@ https://pillow.readthedocs.io/en/stable/
 
 #### `Angles calculations:`
 
-https://https://chat.openai.com/
+https://chat.openai.com/
 
 
 <p align="center">
