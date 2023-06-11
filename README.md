@@ -56,7 +56,9 @@ https://github.com/Stellarium/stellarium
 
 #### `Stellarium Scripting API:`
 
-https://stellarium.org/doc/0.21.0/scripting_api.html
+https://stellarium.org/doc/head/remoteControlApi.html
+
+https://www.planetmaker.de/2018/11/scripting-stellarium/
 
 #### `PIL Documentation:`
 
