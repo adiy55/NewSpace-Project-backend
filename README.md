@@ -60,6 +60,8 @@ https://stellarium.org/doc/head/remoteControlApi.html
 
 https://www.planetmaker.de/2018/11/scripting-stellarium/
 
+https://lauradurieux.medium.com/how-to-use-stellarium-http-api-f0942d2c8820
+
 #### `PIL Documentation:`
 
 https://pillow.readthedocs.io/en/stable/
